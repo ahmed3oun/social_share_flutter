@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "749123256047",
+    "project_id": "socialmediainshare",
+    "storage_bucket": "socialmediainshare.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749123256047:android:5c5873e17fb0cef22c651a",
+        "android_client_info": {
+          "package_name": "com.tekup.socialmediainshare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "749123256047-bif8gvdgfb1ontd70mruu4ks7r5nk2ap.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAy1DQUsWXPWBdj9MBTwFPBBZgPQH_QDY4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "749123256047-bif8gvdgfb1ontd70mruu4ks7r5nk2ap.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
