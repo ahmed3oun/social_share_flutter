@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "749123256047-luks3gkafd3vti5caoa0vmrje88culr0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tekup.socialmediainshare",
+            "certificate_hash": "abe77263ab3364a432748fb8fa53ecd0a291464f"
+          }
+        },
+        {
           "client_id": "749123256047-bif8gvdgfb1ontd70mruu4ks7r5nk2ap.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "749123256047-bif8gvdgfb1ontd70mruu4ks7r5nk2ap.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "749123256047-insch8s8dd0psad3i0bnragms3hkhi5q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tekup.socialmediainshare"
+              }
             }
           ]
         }

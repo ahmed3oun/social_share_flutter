@@ -1,11 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 //import 'package:flutter/animation.dart';
 import 'package:social_share/pages/activity_feed.dart';
+import 'package:social_share/pages/createAccount.dart';
 import 'package:social_share/pages/profile.dart';
 import 'package:social_share/pages/search.dart';
 import 'package:social_share/pages/timeline.dart';
 import 'package:social_share/pages/upload.dart';
+
+final GoogleSignIn googleSignIn = GoogleSignIn();
+final usersRef = FirebaseFirestore.instance.collection('users');
+final dateTime = DateTime.now();
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -15,7 +22,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool isAuth = true;
+  bool isAuth = false;
 
   PageController pageController = PageController();
 
@@ -23,22 +30,68 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    //pageController = PageController();
+    googleSignIn.onCurrentUserChanged.listen((account) {
+      handleSignIn(account);
+    }, onError: (err) => print('Error signing in : $err'));
+
+    googleSignIn.signInSilently(suppressErrors: false).then((account) {
+      handleSignIn(account);
+    }).catchError((err) => print('Error singing : $err'));
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     pageController.dispose();
     super.dispose();
   }
 
+  handleSignIn(GoogleSignInAccount account) {
+    if (account != null) {
+      createUserInFirestore();
+      setState(() {
+        isAuth = true;
+      });
+    } else {
+      setState(() {
+        isAuth = false;
+      });
+    }
+  }
+
+  createUserInFirestore() async {
+    final GoogleSignInAccount user = googleSignIn.currentUser;
+    final docSnapshot = await usersRef.doc(user.id).get();
+
+    if (!docSnapshot.exists) {
+      final username = await Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CreateAccount()));
+
+      usersRef.doc(user.id).set({
+        "id": user.id,
+        "username": username,
+        "photoUrl": user.photoUrl,
+        "email": user.email,
+        "displayName": user.displayName,
+        "bio": "",
+        "timestamp": dateTime
+      });
+    }
+  }
+
+  login() {
+    googleSignIn
+        .signIn()
+        .then((account) => print(' *************** $account **********'));
+  }
+
+  logout() {
+    googleSignIn.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
-    //return isAuth ? buildAuthScreen() : buildUnAuthScreen();
-    return buildAuthScreen();
+    return isAuth ? buildAuthScreen() : buildUnAuthScreen();
   }
 
   onPageChanged(int pageIndex) {
@@ -56,7 +109,11 @@ class _HomeState extends State<Home> {
     return Scaffold(
         body: PageView(
           children: <Widget>[
-            Timeline(),
+            //Timeline(),
+            RaisedButton(
+              child: Text('Logout'),
+              onPressed: logout,
+            ),
             ActivityFeed(),
             Upload(),
             Search(),
@@ -107,7 +164,7 @@ class _HomeState extends State<Home> {
                   fontFamily: "Signatra", fontSize: 90.0, color: Colors.white),
             ),
             GestureDetector(
-              onTap: () => print('google sign in button'),
+              onTap: () => login(),
               child: Container(
                 width: 260.0,
                 height: 60,
