@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:social_share/models/user.dart';
 //import 'package:flutter/animation.dart';
 import 'package:social_share/pages/activity_feed.dart';
 import 'package:social_share/pages/createAccount.dart';
@@ -11,8 +13,11 @@ import 'package:social_share/pages/timeline.dart';
 import 'package:social_share/pages/upload.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
+final storageRef = firebase_storage.FirebaseStorage.instance.ref();
 final usersRef = FirebaseFirestore.instance.collection('users');
+final postsRef = FirebaseFirestore.instance.collection('posts');
 final dateTime = DateTime.now();
+var /* User? */ currentUser;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -61,7 +66,7 @@ class _HomeState extends State<Home> {
 
   createUserInFirestore() async {
     final GoogleSignInAccount user = googleSignIn.currentUser;
-    final docSnapshot = await usersRef.doc(user.id).get();
+    var docSnapshot = await usersRef.doc(user.id).get();
 
     if (!docSnapshot.exists) {
       final username = await Navigator.push(
@@ -76,7 +81,12 @@ class _HomeState extends State<Home> {
         "bio": "",
         "timestamp": dateTime
       });
+
+      docSnapshot = await usersRef.doc(user.id).get();
     }
+
+    currentUser = //User.fromDocument(docSnapshot);
+        User.fromDocument(docSnapshot);
   }
 
   login() {
@@ -115,9 +125,11 @@ class _HomeState extends State<Home> {
               onPressed: logout,
             ),
             ActivityFeed(),
-            Upload(),
+            Upload(
+              currentUser: currentUser!,
+            ),
             Search(),
-            Profile()
+            Profile(profileId: currentUser!.id!)
           ],
           controller: pageController,
           onPageChanged: onPageChanged,

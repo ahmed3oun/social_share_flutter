@@ -40,8 +40,8 @@ class _TimelineState extends State<Timeline> {
     QuerySnapshot snapshot =
         // await usersRef.where("isAdmin", isEqualTo: true).get();
         await usersRef
-            .where("postsCount", isGreaterThanOrEqualTo: 2)
-            .where("isAdmin", isEqualTo: true)
+            //.where("displayName", isGreaterThanOrEqualTo: "Ahmed")
+            .where("username", isEqualTo: "ahmed3oun")
             .get();
 
     setState(() {
@@ -77,7 +77,7 @@ class _TimelineState extends State<Timeline> {
             }
             final List<Text> children = snapshot.data!.docs
                 .map((e) =>
-                    Text(e["username"] + " " + e['postsCount'].toString()))
+                    Text(e["username"] + " " + e['displayName'].toString()))
                 .toList();
 
             return Container(
